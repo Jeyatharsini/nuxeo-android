@@ -62,18 +62,17 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>maven-android-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>alignApk</id>
-            <phase>package</phase>
-            <goals>
-              <goal>zipalign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+            <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+            <artifactId>android-maven-plugin</artifactId>
+            <version>3.6.0</version>
+            <configuration>
+                <sdk>
+                    <platform>16</platform>
+                </sdk>
+                <undeployBeforeDeploy>true</undeployBeforeDeploy>
+            </configuration>
+            <extensions>true</extensions>
+        </plugin>
     </plugins>
   </build>
 </project>
