@@ -23,9 +23,13 @@ import org.nuxeo.ecm.automation.client.cache.CacheBehavior;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 import org.nuxeo.ecm.automation.client.jaxrs.model.Documents;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,112 +37,133 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SimpleFetchSampleActivty extends BaseNuxeoActivity implements
-        View.OnClickListener {
+		View.OnClickListener {
 
-    protected TextView statusText;
+	protected TextView statusText;
 
-    protected TextView docTitle;
+	protected TextView docTitle;
 
-    protected ImageView iconView;
+	protected ImageView iconView;
 
-    protected ImageView pictureView;
+	protected ImageView pictureView;
 
-    protected Button openBtn;
+	protected Button openBtn;
 
-    protected Document selectedDocument;
+	protected Document selectedDocument;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.simplefetch);
+	@SuppressLint("NewApi")
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.simplefetch);
 
-        statusText = (TextView) findViewById(R.id.statusText);
+		if (Build.VERSION.SDK_INT >= 11) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 
-        docTitle = (TextView) findViewById(R.id.docTitle);
-        docTitle.setText("???");
+		statusText = (TextView) findViewById(R.id.statusText);
 
-        iconView = (ImageView) findViewById(R.id.iconView);
-        pictureView = (ImageView) findViewById(R.id.pictureView);
+		docTitle = (TextView) findViewById(R.id.docTitle);
+		docTitle.setText("Fetching ...");
 
-        openBtn = (Button) findViewById(R.id.openBtn);
-        openBtn.setOnClickListener(this);
+		iconView = (ImageView) findViewById(R.id.iconView);
+		pictureView = (ImageView) findViewById(R.id.pictureView);
+
+		openBtn = (Button) findViewById(R.id.openBtn);
+		openBtn.setOnClickListener(this);
+	}
+
+	@Override
+	protected boolean requireAsyncDataRetrieval() {
+		return true;
+	}
+
+	@Override
+	protected void onNuxeoDataRetrievalStarted() {
+		statusText.setText("Fetching ...");
+		statusText.setVisibility(View.VISIBLE);
+		openBtn.setVisibility(View.INVISIBLE);
+	}
+
+	@Override
+	protected void onNuxeoDataRetrieved(Object data) {
+		Documents docs = (Documents) data;
+
+		if (docs.size() == 0) {
+			statusText.setText("No Picture found on your server ...");
+			statusText.setVisibility(View.VISIBLE);
+			openBtn.setVisibility(View.INVISIBLE);
+		} else {
+			statusText.setText("");
+			statusText.setVisibility(View.INVISIBLE);
+			selectedDocument = docs.get(0);
+
+			docTitle.setText(selectedDocument.getTitle());
+
+			// Document properties are fetched, but not binary data
+			// you can use ContentProvider binding to let Android fetch them via
+			// Uri
+			//
+			// icon : content://nuxeo/icons/<type> (can use Document.getIcon())
+			// blob : content://nuxeo/blobs/<UUID>/<idx> (can use
+			// Document.getBlob(idx))
+
+			iconView.setImageURI(Uri.parse("content://"
+					+ NuxeoContentProviderConfig.getAuthority() + "/icons"
+					+ selectedDocument.getString("common:icon")));
+
+			String contentUri = "content://"
+					+ NuxeoContentProviderConfig.getAuthority() + "/blobs/"
+					+ selectedDocument.getId();
+			pictureView.setImageURI(Uri.parse(contentUri));
+
+			openBtn.setVisibility(View.VISIBLE);
+		}
+
+	}
+
+	@Override
+	protected Object retrieveNuxeoData() throws Exception {
+		return getNuxeoContext()
+				.getDocumentManager()
+				.query("select * from Picture where ecm:currentLifeCycleState != 'deleted' order by dc:modified desc",
+						null, null, null, 0, 10, CacheBehavior.STORE);
+	}
+	
+	protected void onNuxeoDataRetrieveFailed() {
+		Toast.makeText(getApplicationContext(), "Erreur lors de la récupération des fichiers", Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    protected boolean requireAsyncDataRetrieval() {
-        return true;
-    }
+	@Override
+	public void onClick(View srcView) {
+		if (srcView == openBtn) {
 
-    @Override
-    protected void onNuxeoDataRetrievalStarted() {
-        statusText.setText("Fetching ...");
-        statusText.setVisibility(View.VISIBLE);
-        openBtn.setVisibility(View.INVISIBLE);
-    }
+			// could use startViewerFromBlob(Uri uri) from base class
+			// but do it by hand for now in order to show usage of Uri
+			// to send Nuxeo data to external applications
 
-    @Override
-    protected void onNuxeoDataRetrieved(Object data) {
-        Documents docs = (Documents) data;
+			Uri contentUri = selectedDocument.getBlob();
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setData(contentUri);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        if (docs.size() == 0) {
-            statusText.setText("No Picture found on your server ...");
-            statusText.setVisibility(View.VISIBLE);
-            openBtn.setVisibility(View.INVISIBLE);
-        } else {
-            statusText.setText("");
-            statusText.setVisibility(View.INVISIBLE);
-            selectedDocument = docs.get(0);
+			try {
+				startActivity(intent);
+			} catch (android.content.ActivityNotFoundException e) {
+				Toast.makeText(this, "No Application Available to View this",
+						Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
 
-            docTitle.setText(selectedDocument.getTitle());
-
-            // Document properties are fetched, but not binary data
-            // you can use ContentProvider binding to let Android fetch them via
-            // Uri
-            //
-            // icon : content://nuxeo/icons/<type> (can use Document.getIcon())
-            // blob : content://nuxeo/blobs/<UUID>/<idx> (can use
-            // Document.getBlob(idx))
-
-            iconView.setImageURI(Uri.parse("content://"
-                    + NuxeoContentProviderConfig.getAuthority() + "/icons"
-                    + selectedDocument.getString("common:icon")));
-
-            String contentUri = "content://"
-                    + NuxeoContentProviderConfig.getAuthority() + "/blobs/"
-                    + selectedDocument.getId();
-            pictureView.setImageURI(Uri.parse(contentUri));
-
-            openBtn.setVisibility(View.VISIBLE);
-        }
-
-    }
-
-    @Override
-    protected Object retrieveNuxeoData() throws Exception {
-        return getNuxeoContext().getDocumentManager().query(
-                "select * from Picture order by dc:modified desc", null, null,
-                null, 0, 10, CacheBehavior.STORE);
-    }
-
-    @Override
-    public void onClick(View srcView) {
-        if (srcView == openBtn) {
-
-            // could use startViewerFromBlob(Uri uri) from base class
-            // but do it by hand for now in order to show usage of Uri
-            // to send Nuxeo data to external applications
-
-            Uri contentUri = selectedDocument.getBlob();
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(contentUri);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            try {
-                startActivity(intent);
-            } catch (android.content.ActivityNotFoundException e) {
-                Toast.makeText(this, "No Application Available to View this",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 }

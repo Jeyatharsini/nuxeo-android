@@ -24,10 +24,13 @@ import org.nuxeo.android.automation.ServerSettingsActivity;
 import org.nuxeo.android.config.NuxeoServerConfig;
 import org.nuxeo.android.context.NuxeoContext;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -37,6 +40,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 
+@SuppressLint("NewApi")
 public class HomeSampleActivity extends Activity implements
         View.OnClickListener {
 
@@ -60,6 +64,10 @@ public class HomeSampleActivity extends Activity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        if (Build.VERSION.SDK_INT >= 11) {
+			getActionBar().setDisplayShowHomeEnabled(false);
+		}
 
         connectBtn = (Button) findViewById(R.id.connect);
         connectBtn.setOnClickListener(this);
@@ -91,9 +99,6 @@ public class HomeSampleActivity extends Activity implements
         } else if (view == contentUriBtn) {
             startActivity(new Intent(getApplicationContext(),
                     SimpleFetchSampleActivty.class));
-        } else if (view == contentProviderBtn) {
-            startActivity(new Intent(getApplicationContext(),
-                    ContentProviderSampleActivity.class));
         } else if (view == docListBtn) {
             startActivity(new Intent(getApplicationContext(),
                     SimpleDocumentsListSampleActivity.class));
@@ -103,6 +108,9 @@ public class HomeSampleActivity extends Activity implements
         } else if (view == docProviderBtn) {
             startActivity(new Intent(getApplicationContext(),
                     DocumentProviderSampleActivity.class));
+        } else if (view == contentProviderBtn) {
+            startActivity(new Intent(getApplicationContext(),
+                    ContentProviderSampleActivity.class));
         } else {
             // start activity
             // See openIntend
@@ -112,11 +120,11 @@ public class HomeSampleActivity extends Activity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.simplemenu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.simplemenu, menu);
+		return true;
+	}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

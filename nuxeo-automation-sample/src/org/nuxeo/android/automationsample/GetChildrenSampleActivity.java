@@ -71,7 +71,7 @@ public class GetChildrenSampleActivity extends BaseSampleDocumentsListActivity {
     protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
             throws Exception {
         Documents docs = getNuxeoContext().getDocumentManager().query(
-                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted' AND ecm:parentId=? order by dc:modified desc",
                 new String[] { getRootUUID() }, null, null, 0, 10, cacheParam);
         if (docs != null) {
             return docs.asUpdatableDocumentsList();

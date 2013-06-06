@@ -1,0 +1,16 @@
+<projectDescription>
+  <name>nuxeo-automation-sample</name>
+  <comment>Nuxeo Android sample client for Nuxeo automation. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <projects>
+    <project>nuxeo-android-connector</project>
+    <project>nuxeo-android-connector-ui</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
