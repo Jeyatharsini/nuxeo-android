@@ -62,9 +62,11 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
     @Override
     protected LazyUpdatableDocumentsList fetchDocumentsList(byte cacheParam)
             throws Exception {
+    	Document doc = getInitParam(ROOT_DOC_PARAM, Document.class);
+    	setTitle(doc.getName() + " pictures");
         Documents docs = getNuxeoContext().getDocumentManager().query(
-                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
-                new String[] { getInitParam(ROOT_DOC_PARAM, Document.class).getId() },
+                "select * from Document where ecm:mixinType != \"HiddenInNavigation\" AND ecm:currentLifeCycleState!='deleted' AND ecm:isCheckedInVersion = 0 AND ecm:parentId=? order by dc:modified desc",
+                new String[] { doc.getId() },
                 null, null, 0, 10, cacheParam);
         if (docs != null) {
             return docs.asUpdatableDocumentsList();

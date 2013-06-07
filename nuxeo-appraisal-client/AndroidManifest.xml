@@ -16,11 +16,11 @@
     <application
         android:name="org.nuxeo.android.appraisal.NuxeoAppraisalClient"
         android:icon="@drawable/appraisal"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/AppBaseTheme" >
         <activity
             android:name="AppraisalListActivity"
-            android:label="Pending Appraisals assigned to me"
-            android:theme="@style/Theme.NuxeoAndroid" >
+            android:label="Pending Appraisals assigned to me" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,13 +29,11 @@
         </activity>
         <activity
             android:name="AppraisalContentListActivity"
-            android:label="Appraisal pictures"
-            android:theme="@style/Theme.NuxeoAndroid" >
+            android:label="Appraisal pictures" >
         </activity>
         <activity
             android:name="AppraisalLayoutActivity"
-            android:label="Appraisal view"
-            android:theme="@style/Theme.NuxeoAndroid" >
+            android:label="Appraisal view" >
         </activity>
         <!--
         <activity android:name="DocumentLayoutActivity"
@@ -44,13 +42,11 @@
         -->
         <activity
             android:name="org.nuxeo.android.automation.NetworkSettingsActivity"
-            android:label="Nuxeo Offline Settings"
-            android:theme="@style/Theme.NuxeoAndroid" >
+            android:label="Nuxeo Offline Settings" >
         </activity>
         <activity
             android:name="org.nuxeo.android.automation.ServerSettingsActivity"
-            android:label="Settings"
-            android:theme="@style/Theme.NuxeoAndroid" >
+            android:label="Settings" >
         </activity>
 
         <provider

@@ -27,124 +27,127 @@ import android.util.Log;
  */
 public class PropertiesHelper {
 
-    public static boolean isBlob(Object v) {
-        return v instanceof Blob;
-    }
+	public static boolean isBlob(Object v) {
+		return v instanceof Blob;
+	}
 
-    public static boolean isMap(Object v) {
-        return v instanceof PropertyMap;
-    }
+	public static boolean isMap(Object v) {
+		return v instanceof PropertyMap;
+	}
 
-    public static boolean isList(Object v) {
-        return v instanceof PropertyList;
-    }
+	public static boolean isList(Object v) {
+		return v instanceof PropertyList;
+	}
 
-    public static boolean isScalar(Object v) {
-        return !isBlob(v) && !isList(v) && !isMap(v);
-    }
+	public static boolean isScalar(Object v) {
+		return !isBlob(v) && !isList(v) && !isMap(v);
+	}
 
-    public static String getString(Object v, String defValue) {
-        if (v == null) {
-            return defValue;
-        }
-        if (v.getClass() == String.class) {
-            return v.toString();
-        }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
-    }
+	public static String getString(Object v, String defValue) {
+		if (v == null) {
+			return defValue;
+		}
+		if (v.getClass() == String.class) {
+			return v.toString();
+		}
+		throw new IllegalArgumentException("Property is not a scalar: " + v);
+	}
 
-    public static Boolean getBoolean(Object v, Boolean defValue) {
-        if (v == null) {
-            return defValue;
-        }
-        if (v.getClass() == String.class) {
-            return Boolean.valueOf(v.toString());
-        }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
-    }
+	public static Boolean getBoolean(Object v, Boolean defValue) {
+		if (v == null) {
+			return defValue;
+		}
+		if (v.getClass() == String.class) {
+			return Boolean.valueOf(v.toString());
+		}
+		throw new IllegalArgumentException("Property is not a scalar: " + v);
+	}
 
-    public static Long getLong(Object v, Long defValue) {
-        if (v == null) {
-            return defValue;
-        }
-        if (v.getClass() == String.class) {
-            return Long.valueOf(v.toString());
-        }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
-    }
+	public static Long getLong(Object v, Long defValue) {
+		if (v == null) {
+			return defValue;
+		}
+		if (v.getClass() == String.class) {
+			return Long.valueOf(v.toString());
+		}
+		throw new IllegalArgumentException("Property is not a scalar: " + v);
+	}
 
-    public static Double getDouble(Object v, Double defValue) {
-        if (v == null) {
-            return defValue;
-        }
-        if (v.getClass() == String.class) {
-            return Double.valueOf(v.toString());
-        }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
-    }
+	public static Double getDouble(Object v, Double defValue) {
+		if (v == null) {
+			return defValue;
+		}
+		if (v.getClass() == String.class) {
+			return Double.valueOf(v.toString());
+		}
+		throw new IllegalArgumentException("Property is not a scalar: " + v);
+	}
 
-    public static Date getDate(Object v, Date defValue) {
-        if (v == null || "null".equals(v)) {
-            return defValue;
-        }
-        if (v.getClass() == String.class) {
-            return DateUtils.parseDate(v.toString());
-        }
-        throw new IllegalArgumentException("Property is not a scalar: " + v);
-    }
+	public static Date getDate(Object v, Date defValue) {
+		if (v == null || "null".equals(v)) {
+			return defValue;
+		}
+		if (v.getClass() == String.class) {
+			// XXX DateUtils.parseDate(v.toString());	Parfois erreur sur la date
 
-    public static PropertyList getList(Object v, PropertyList defValue) {
-        if (v == null) {
-            return defValue;
-        }
-        if (v instanceof PropertyList) {
-            return (PropertyList) v;
-        }
-        throw new IllegalArgumentException("Property is not a list: " + v);
-    }
+			String dateString = v.toString().substring(0, 10);
+			return DateUtils.parseDate(dateString.toString());
+		}
+		throw new IllegalArgumentException("Property is not a scalar: " + v);
+	}
 
-    public static PropertyMap getMap(Object v, PropertyMap defValue) {
-        if (v == null) {
-            return defValue;
-        }
-        if (v instanceof PropertyMap) {
-            return (PropertyMap) v;
-        }
-        throw new IllegalArgumentException("Property is not a map: " + v);
-    }
+	public static PropertyList getList(Object v, PropertyList defValue) {
+		if (v == null) {
+			return defValue;
+		}
+		if (v instanceof PropertyList) {
+			return (PropertyList) v;
+		}
+		throw new IllegalArgumentException("Property is not a list: " + v);
+	}
 
-    public static String toStringProperties(PropertyMap props) {
-        StringBuffer sb = new StringBuffer();
-        for (String propName : props.getKeys()) {
-            Object value = props.map().get(propName);
-            if (value != null) {
-                sb.append(propName);
-                sb.append("=");
-                sb.append(encodePropertyAsString(value));
-                sb.append("\n");
-            } else {
-                Log.w(PropertiesHelper.class.getSimpleName(), "No value for "
-                        + propName);
-            }
-        }
-        return sb.toString();
-    }
+	public static PropertyMap getMap(Object v, PropertyMap defValue) {
+		if (v == null) {
+			return defValue;
+		}
+		if (v instanceof PropertyMap) {
+			return (PropertyMap) v;
+		}
+		throw new IllegalArgumentException("Property is not a map: " + v);
+	}
 
-    public static String encodePropertyAsString(Object prop) {
-        if (prop instanceof PropertyList) {
-            PropertyList list = (PropertyList) prop;
-            StringBuffer sb = new StringBuffer();
-            for (Object item : list.list()) {
-                sb.append(encodePropertyAsString(item));
-                sb.append(";");
-            }
-            return sb.toString();
-        } else if (prop instanceof PropertyMap) {
-            PropertyMap map = (PropertyMap) prop;
-            return new JSONObject(map.map()).toString();
-        } else {
-            String value = prop.toString();
-            return value.replace("\n", " \\\n");
-        }
-    }
+	public static String toStringProperties(PropertyMap props) {
+		StringBuffer sb = new StringBuffer();
+		for (String propName : props.getKeys()) {
+			Object value = props.map().get(propName);
+			if (value != null) {
+				sb.append(propName);
+				sb.append("=");
+				sb.append(encodePropertyAsString(value));
+				sb.append("\n");
+			} else {
+				Log.w(PropertiesHelper.class.getSimpleName(), "No value for "
+						+ propName);
+			}
+		}
+		return sb.toString();
+	}
+
+	public static String encodePropertyAsString(Object prop) {
+		if (prop instanceof PropertyList) {
+			PropertyList list = (PropertyList) prop;
+			StringBuffer sb = new StringBuffer();
+			for (Object item : list.list()) {
+				sb.append(encodePropertyAsString(item));
+				sb.append(";");
+			}
+			return sb.toString();
+		} else if (prop instanceof PropertyMap) {
+			PropertyMap map = (PropertyMap) prop;
+			return new JSONObject(map.map()).toString();
+		} else {
+			String value = prop.toString();
+			return value.replace("\n", " \\\n");
+		}
+	}
 }

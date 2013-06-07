@@ -42,7 +42,9 @@ public class NuxeoServerConfig implements OnSharedPreferenceChangeListener {
 
     protected SharedPreferences sharedPrefs;
 
-    protected String serverBaseUrl = "http://10.0.2.2:8080/nuxeo/"; // http://android.demo.nuxeo.com/nuxeo/
+    protected String serverBaseUrl = "http://10.213.3.5:8080/nuxeo/";
+    	// "http://10.0.2.2:8080/nuxeo/"; pour tests émulateur
+    // http://android.demo.nuxeo.com/nuxeo/
 
     protected String login = "Administrator"; // "droidUser";
 
