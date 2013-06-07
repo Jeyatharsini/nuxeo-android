@@ -17,6 +17,7 @@
 
 package org.nuxeo.android.activities;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -56,6 +57,9 @@ public abstract class BaseListActivity extends BaseNuxeoActivity implements
         }
         if (refreshBtn != null) {
             refreshBtn.setOnClickListener(this);
+        }
+        if (Build.VERSION.SDK_INT >= 11) {
+        	refreshBtn.setVisibility(View.GONE);
         }
     }
 

@@ -121,22 +121,6 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case MNU_NETWORK_CONFIG:
-            startActivity(new Intent(getApplicationContext(),
-                    NetworkSettingsActivity.class));
-            return true;
-        case MNU_SERVER_CONFIG:
-            startActivity(new Intent(getApplicationContext(),
-                    ServerSettingsActivity.class));
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int selectedPosition = info.position;
@@ -169,4 +153,32 @@ public class AppraisalListActivity extends BaseDocumentsListActivity {
         startActivity(new Intent(this, AppraisalContentListActivity.class).putExtra(
                 AppraisalContentListActivity.ROOT_DOC_PARAM, doc));
     }
+    
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.listactivity_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle all of the possible menu actions.
+		switch (item.getItemId()) {
+
+		case R.id.itemNetworkConfig:
+            startActivity(new Intent(getApplicationContext(),
+                    NetworkSettingsActivity.class));
+			break;
+		case R.id.itemServerSettings:
+            startActivity(new Intent(getApplicationContext(),
+                    ServerSettingsActivity.class));
+			break;
+		case R.id.itemRefresh:
+			doRefresh();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

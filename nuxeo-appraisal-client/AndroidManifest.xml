@@ -20,7 +20,8 @@
         android:theme="@style/AppBaseTheme" >
         <activity
             android:name="AppraisalListActivity"
-            android:label="Pending Appraisals assigned to me" >
+            android:label="Pending Appraisals assigned to me"
+            android:uiOptions="splitActionBarWhenNarrow" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

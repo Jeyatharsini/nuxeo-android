@@ -19,6 +19,7 @@ package org.nuxeo.android.appraisal;
 
 import org.nuxeo.android.activities.BaseDocumentLayoutActivity;
 import org.nuxeo.android.layout.LayoutMode;
+import org.nuxeo.ecm.automation.client.jaxrs.model.Document;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,66 +30,78 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class AppraisalLayoutActivity extends BaseDocumentLayoutActivity
-        implements View.OnClickListener {
+		implements View.OnClickListener {
 
-    protected TextView title;
+	protected TextView title;
 
-    protected Button saveBtn;
+	protected Button saveBtn;
 
-    protected Button cancelBtn;
+	protected Button cancelBtn;
 
-    @Override
-    protected ViewGroup getLayoutContainer() {
-        return (ScrollView) findViewById(R.id.layoutContainer);
-    }
+	@Override
+	protected ViewGroup getLayoutContainer() {
+		return (ScrollView) findViewById(R.id.layoutContainer);
+	}
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.createeditlayout);
-        title = (TextView) findViewById(R.id.currentDocTitle);
+		setContentView(R.layout.createeditlayout);
+		title = (TextView) findViewById(R.id.currentDocTitle);
 
-        if (isEditMode()) {
-            title.setText("Edit " + getCurrentDocument().getTitle() + " ("
-                    + getCurrentDocument().getType() + ")");
-        } else if (isCreateMode()) {
-            title.setText("Create new " + getCurrentDocument().getType());
-        } else {
-            title.setText("View " + getCurrentDocument().getTitle() + " ("
-                    + getCurrentDocument().getType() + ")");
-        }
+		Document currentDocument = getCurrentDocument();
+		if (isEditMode()) {
+			setTitle("Edit " + currentDocument.getTitle() + " ("
+					+ currentDocument.getType() + ")");
+		} else if (isCreateMode()) {
+			setTitle("Create new " + currentDocument.getType());
+		} else {
+			setTitle("View " + currentDocument.getTitle() + " ("
+					+ currentDocument.getType() + ")");
+		}
 
-        saveBtn = (Button) findViewById(R.id.updateDocument);
-        saveBtn.setOnClickListener(this);
+		title.setText(currentDocument.getTitle());
+		
 
-        cancelBtn = (Button) findViewById(R.id.cancelDocument);
-        cancelBtn.setOnClickListener(this);
+		saveBtn = (Button) findViewById(R.id.updateDocument);
+		saveBtn.setOnClickListener(this);
 
-        buildLayout();
-    }
+		cancelBtn = (Button) findViewById(R.id.cancelDocument);
+		cancelBtn.setOnClickListener(this);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (getMode() == LayoutMode.VIEW) {
-            saveBtn.setVisibility(View.GONE);
-        } else {
-            saveBtn.setVisibility(View.VISIBLE);
-        }
-    }
+		buildLayout();
 
-    @Override
-    public void onClick(View view) {
-        if (view == saveBtn) {
-            saveDocument();
-        } else if (view == cancelBtn) {
-            cancelUpdate();
-        }
-    }
+		// BETTER HERE ?
+		if (getMode() == LayoutMode.VIEW) {
+			saveBtn.setVisibility(View.GONE);
+		} else {
+			saveBtn.setVisibility(View.VISIBLE);
+		}
+	}
 
-    @Override
-    protected void populateMenu(Menu menu) {
-    }
+	// MOVED TO ON CREATE ; GOOD THING ?
+	// @Override
+	// protected void onResume() {
+	// super.onResume();
+	// if (getMode() == LayoutMode.VIEW) {
+	// saveBtn.setVisibility(View.GONE);
+	// } else {
+	// saveBtn.setVisibility(View.VISIBLE);
+	// }
+	// }
+
+	@Override
+	public void onClick(View view) {
+		if (view == saveBtn) {
+			saveDocument();
+		} else if (view == cancelBtn) {
+			cancelUpdate();
+		}
+	}
+
+	@Override
+	protected void populateMenu(Menu menu) {
+	}
 
 }

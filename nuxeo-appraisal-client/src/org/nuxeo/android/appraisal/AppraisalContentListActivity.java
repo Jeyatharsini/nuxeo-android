@@ -120,4 +120,41 @@ public class AppraisalContentListActivity extends BaseDocumentsListActivity {
         registerDocTypesForCreation("Picture", "Picture");
     }
 
+    
+//
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		// Inflate the menu; this adds items to the action bar if it is present.
+//		getMenuInflater().inflate(R.menu.contentlist_menu, menu);
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		// Handle all of the possible menu actions.
+//		switch (item.getItemId()) {
+//
+//		case R.id.item_new_item:
+//			if (getDocTypesForCreation().size() == 1) {
+//				forceRefresh();
+//				Document newDoc = initNewDocument(getDocTypesForCreation()
+//						.keySet().iterator().next());
+//				if (newDoc != null) {
+//					startActivityForResult(
+//							new Intent(this, getEditActivityClass())
+//									.putExtra(
+//											BaseDocumentLayoutActivity.DOCUMENT,
+//											newDoc).putExtra(
+//											BaseDocumentLayoutActivity.MODE,
+//											LayoutMode.CREATE),
+//							ACTION_CREATE_DOCUMENT);
+//				}
+//			}
+//			break;
+//		case R.id.itemRefresh:
+//			doRefresh();
+//			break;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 }
