@@ -19,7 +19,7 @@
       <groupId>com.google.android</groupId>
       <artifactId>android</artifactId>
     </dependency>
-        <dependency>
+    <dependency>
       <groupId>android.support</groupId>
       <artifactId>compatibility-v4</artifactId>
       <version>18</version>
@@ -40,7 +40,7 @@
       </plugin>
       <plugin>
         <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-        <artifactId>android-maven-plugin</artifactId> 
+        <artifactId>android-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

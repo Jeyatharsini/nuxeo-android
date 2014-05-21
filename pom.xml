@@ -96,10 +96,16 @@
         <version>4.1.1.4</version>
         <scope>provided</scope>
       </dependency>
+      <!-- <dependency> -->
+      <!-- <groupId>com.google.android</groupId> -->
+      <!-- <artifactId>support-v4</artifactId> -->
+      <!-- <version>r7</version> -->
+      <!-- <scope>provided</scope> -->
+      <!-- </dependency> -->
       <dependency>
-        <groupId>com.google.android</groupId>
-        <artifactId>support-v4</artifactId>
-        <version>r7</version>
+        <groupId>android.support</groupId>
+        <artifactId>compatibility-v4</artifactId>
+        <version>18</version>
         <scope>provided</scope>
       </dependency>
 
@@ -144,7 +150,7 @@
         <plugin>
           <groupId>com.jayway.maven.plugins.android.generation2</groupId>
           <artifactId>android-maven-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>3.8.0</version>
           <inherited>true</inherited>
           <extensions>true</extensions>
           <configuration>
